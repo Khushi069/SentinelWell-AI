@@ -1,1 +1,18 @@
+# Dependencies & Build Outputs
 node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# Python Cache & Testing
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment & OS
+.env
+.env.local
+.DS_Store
+Thumbs.db

@@ -1,4 +1,4 @@
-const BASE_URL = '/api';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export async function fetchPersonnelProfile(personId = 'PERS_1001') {
   const res = await fetch(`${BASE_URL}/personnel/me?person_id=${personId}`);
