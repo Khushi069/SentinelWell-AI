@@ -1,8 +1,10 @@
 # Stage 1: Build React Frontend
 FROM node:22-alpine AS frontend-builder
 WORKDIR /app/frontend
+
 COPY frontend/package*.json ./
 RUN npm install
+
 COPY frontend/ ./
 RUN npm run build
 
@@ -22,7 +24,7 @@ COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
 WORKDIR /app/backend
 
-EXPOSE 8000
+ENV PORT=10000
+EXPOSE 10000
 
-# Railway automatically passes PORT env variable
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}"]

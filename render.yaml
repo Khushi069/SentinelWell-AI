@@ -1,17 +1,10 @@
 services:
   - type: web
-    name: sentinelwell-backend
-    runtime: python
-    rootDir: backend
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-
-  - type: web
-    name: sentinelwell-frontend
-    runtime: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    name: sentinel-wellness
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/health
     envVars:
-      - key: VITE_API_BASE_URL
-        value: https://sentinelwell-backend.onrender.com/api
+      - key: PORT
+        value: 10000

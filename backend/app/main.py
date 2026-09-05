@@ -9,7 +9,7 @@ from app.routers import personnel, welfare, commander, audit
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup logic: initialize synthetic data & train interpretable risk model
+    # Startup logic: initialize synthetic dataset & fit interpretable risk model
     store.initialize(seed=42)
     yield
 
@@ -42,9 +42,22 @@ def health_check():
         "documentation": "/docs"
     }
 
-# Mount static frontend build if available (Unified Web Service deployment)
-frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
-if os.path.exists(frontend_dist):
+# Check all possible locations for built static frontend dist
+possible_dist_paths = [
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist")),
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")),
+    os.path.abspath("/app/frontend/dist"),
+    os.path.abspath("./frontend/dist"),
+    os.path.abspath("../frontend/dist")
+]
+
+frontend_dist = None
+for path in possible_dist_paths:
+    if os.path.exists(path) and os.path.isdir(path):
+        frontend_dist = path
+        break
+
+if frontend_dist:
     app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="static")
 else:
     @app.get("/")
@@ -53,7 +66,8 @@ else:
             "status": "online",
             "service": "Sentinel Wellness API",
             "version": "1.0.0",
-            "documentation": "/docs"
+            "documentation": "/docs",
+            "notice": "Frontend dist not detected; serving API mode."
         }
 
 if __name__ == "__main__":
